@@ -6,10 +6,6 @@ tags:
     - nightly-e (build_sku == '1bitsgd') and (flavor=='release') and (device=='gpu') and (os=='linux')
 
 testCases:
-#  ExperimentalHTKMLFReader must be used:
-#    patterns:
-#      - HTKDataDeserializer::HTKDataDeserializer
-
   CNTK Run must be completed:
     patterns:
       - __COMPLETED__

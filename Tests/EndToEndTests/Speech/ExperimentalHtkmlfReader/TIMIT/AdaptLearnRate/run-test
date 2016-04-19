@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. $TEST_ROOT_DIR/run-test-common
+
+# Note: can directly use run-timi-test-common since it lives at the same level
+# in the directory hierarchy.
+. $TEST_DIR/../../../../Examples/Speech/TIMIT/run-timit-test-common
+
+# cntkrun <CNTK config file name> <additional CNTK arg>
+cntkrun TIMIT_AdaptLearnRate.cntk "TIMIT_TrainAdaptLR=[cvReader=[readerType=ExperimentalHTKMLFReader]] TIMIT_TrainAdaptLR=[reader=[readerType=ExperimentalHTKMLFReader]] $CntkArguments" || exit $?

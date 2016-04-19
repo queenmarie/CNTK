@@ -1,0 +1,16 @@
+To do
+  WriteBottleneck
+  WriteScaledLogLike
+  TrainAutoEncoder: EXCEPTION occurred: Network needs at least 1 feature and 1 label specified.
+  TrainMultiInput: EXCEPTION occurred: parsedpath: this mode requires an input script with start and end frames given
+  EvalSimpleNetwork: EXCEPTION occurred: parsedpath: this mode requires an input script with start and end frames given
+  CrossValidateSimpleNetwork TODO readMethod=rollingWindow
+
+DONE
+  AdaptLearnRate
+  TrainSimpleNetwork
+  TrainMultiTask
+  TrainNdlNetwork
+  TrainWithPreTrain
+  TrainLstm (baseline change)
+

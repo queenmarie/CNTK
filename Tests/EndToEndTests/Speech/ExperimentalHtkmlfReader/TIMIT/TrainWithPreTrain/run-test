@@ -6,4 +6,4 @@
 # in the directory hierarchy.
 . $TEST_DIR/../../../../Examples/Speech/TIMIT/run-timit-test-common
 
-cntkrun TIMIT_TrainWithPreTrain.cntk "TIMIT_TrainWithPreTrain=[reader=[readerType=ExperimentalHTKMLFReader]] $CntkArguments" || exit $?
+cntkrun TIMIT_TrainWithPreTrain.cntk "reader=[readerType=ExperimentalHTKMLFReader] $CntkArguments" || exit $?

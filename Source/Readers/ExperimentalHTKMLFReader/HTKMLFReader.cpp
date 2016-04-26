@@ -189,7 +189,7 @@ void HTKMLFReader::StartEpoch(const EpochConfiguration& config)
             fprintf(stderr, "Legacy configuration is used for truncated BPTT mode, please adapt the config to explicitly specify truncationLength.\n");
             truncationLength = minibatchSize;
             size_t numParallelSequences = m_numParallelSequencesForAllEpochs[config.m_epochIndex];
-            minibatchSize = numParallelSequences * truncationLength;
+            minibatchSize = numParallelSequences * truncationLength; // TODO divide by number of workers
         }
 
         m_packer = std::make_shared<BpttPacker>(

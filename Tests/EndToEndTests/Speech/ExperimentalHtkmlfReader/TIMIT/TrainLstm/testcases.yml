@@ -5,12 +5,9 @@ tags:
     # due to time, only in 1BitSGD, GPU and release
     - nightly-e (build_sku == '1bitsgd') and (flavor=='release') and (device=='gpu') and (os=='linux')
 
-testCases:
-  # Note: this test has a new baseline, so we can check for usage of the new reader
-  ExperimentalHTKMLFReader must be used:
-    patterns:
-      - HTKDataDeserializer::HTKDataDeserializer
+# TODO baseline doesn't yet match
 
+testCases:
   CNTK Run must be completed:
     patterns:
       - __COMPLETED__

@@ -2,7 +2,7 @@
 
 . $TEST_ROOT_DIR/run-test-common
 
-# Note: can directly use run-timi-test-common since it lives at the same level
+# Note: can directly use run-timit-test-common since it lives at the same level
 # in the directory hierarchy.
 . $TEST_DIR/../../../../Examples/Speech/TIMIT/run-timit-test-common
 

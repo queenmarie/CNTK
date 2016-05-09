@@ -6,6 +6,7 @@
 
 #include "Bundler.h"
 #include <set>
+#include <cinttypes>
 
 namespace Microsoft { namespace MSR { namespace CNTK {
 
@@ -25,6 +26,8 @@ Bundler::Bundler(
     bool cleanse)
     : m_deserializers(deserializers), m_driver(driver)
 {
+    fprintf(stderr, "Constructing Bundler\n");
+
     UNUSED(readerConfig);
 
     // Combines streams of underlying deserializers.
@@ -45,6 +48,7 @@ Bundler::Bundler(
 // Creates chunk descriptions based on chunks of underlying deserializers.
 void Bundler::CreateChunkDescriptions()
 {
+    fprintf(stderr, "Bundler::CreateChunkDescriptions(): entered\n");
     auto chunks = m_driver->GetChunkDescriptions();
     if (chunks.size() < 1)
     {
@@ -53,7 +57,7 @@ void Bundler::CreateChunkDescriptions()
 
     m_chunks.reserve(chunks.size());
 
-    // If there is not cleaning required simply build chunks based on the chunk descriptions of the primary deserializer.
+    // If there is no cleaning required simply build chunks based on the chunk descriptions of the primary deserializer.
     if (!m_cleanse)
     {
         for (const auto& c : chunks)
@@ -69,11 +73,13 @@ void Bundler::CreateChunkDescriptions()
     }
 
     // Otherwise build bundling chunks using underlying deserializers.
+    fprintf(stderr, "Bundler::CreateChunkDescriptions(): cleaning data\n");
     std::vector<SequenceDescription> sequenceDescriptions;
     sequenceDescriptions.reserve(chunks.front()->m_numberOfSequences);
     SequenceDescription s;
     for (size_t chunkIndex = 0; chunkIndex < chunks.size(); ++chunkIndex)
     {
+        fprintf(stderr, "Bundler::CreateChunkDescriptions(): cleaning data for chunk %d/%d\n", (int)chunkIndex, (int)chunks.size());
         size_t numberOfSamples = 0;
         size_t numberOfSequences = 0;
         sequenceDescriptions.clear();
@@ -92,6 +98,11 @@ void Bundler::CreateChunkDescriptions()
                 {
                     isValid = false;
                     invalid.insert(sequenceIndex);
+                    fprintf(stderr,
+                        "Sequence (%d, %d) not valid for deserializer %d\n",
+                        (int)sequenceDescriptions[sequenceIndex].m_key.m_sequence,
+                        (int)sequenceDescriptions[sequenceIndex].m_key.m_sample,
+                        (int)deserializerIndex);
                     break;
                 }
             }
@@ -113,8 +124,10 @@ void Bundler::CreateChunkDescriptions()
             cd->m_original = chunks[chunkIndex];
             m_chunks.push_back(cd);
             cd->m_invalid = std::move(invalid);
-        }
+        } // TODO else output something
     }
+    fprintf(stderr, "Bundler::CreateChunkDescriptions(): leaving\n");
+    // TODO error if no sequences after cleaning
 }
 
 // Gets chunk descriptions.
@@ -212,7 +225,17 @@ public:
 
                 size_t currentIndex = sequenceIndex * m_numberOfInputs + deserializerIndex;
                 deserializers[deserializerIndex]->GetSequenceDescriptionByKey(sequences[sequenceIndex].m_key, s);
+                // TODO why don't we check for isValid here. If it's not okay, should at least output a message.
                 m_sequenceToSequence[currentIndex] = s.m_id;
+
+                if (!s.m_isValid)
+                {
+                    fprintf(stderr,
+                        "Sequence (%" PRIu64 ", %" PRIu64 ") not valid for deserializer %" PRIu64 "\n",
+                        sequences[sequenceIndex].m_key.m_sequence,
+                        sequences[sequenceIndex].m_key.m_sample,
+                        deserializerIndex);
+                }
 
                 ChunkPtr secondaryChunk;
                 auto it = secondaryChunks.find(s.m_chunkId);
